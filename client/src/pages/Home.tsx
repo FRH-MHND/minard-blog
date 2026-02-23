@@ -182,9 +182,19 @@ export default function Home() {
         <AnimatedSection>
           <p
             className="drop-cap text-lg leading-relaxed mb-6"
-            style={{ lineHeight: 1.9, color: "oklch(0.88 0.02 80)" }}
+            style={{ lineHeight: 1.9 }}
           >
-            Charles Joseph Minard's 1869 <em>Carte figurative des pertes successives en hommes de l'Armée Française dans la campagne de Russie 1812–1813</em> is widely regarded as one of the most significant works in the history of data visualisation. Celebrated by Edward Tufte as "the best statistical graphic ever drawn" <span className="ref-num">[1]</span>, Minard's work is a powerful testament to the capacity of visual communication to render a complex and tragic story with clarity and emotional force. This post examines the graphic's considerable strengths through the lens of established design principles, before turning a critical eye to its limitations and considering how it might be reimagined with contemporary tools.
+            Charles Joseph Minard’s 1869 <em>Carte figurative des pertes successives en
+            hommes de l’Armée Française dans la campagne de Russie</em> 1812–1813 is regarded
+            widely as one of the most important works in data visualisation.
+            According to statistician and professor emeritus of political science, statistics,
+            and computer science at Yale University, Edward Tufte, Minard’s <em>Carte figurative</em> is
+            “the best statistical graphic ever drawn” <sup>[1]</sup>, since Minard’s work is considered
+            powerful evidence of the ability of visual communication to portray a complex and
+            tragic story clearly and with great emotional impact.
+            This blog analyses the considerable strengths of this graphic from the perspective
+            of established design principles before moving onto critiques of its limitations
+            and how it can be potentially reimagined via contemporary tools.
           </p>
         </AnimatedSection>
 
