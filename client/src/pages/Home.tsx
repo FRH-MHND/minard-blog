@@ -7,6 +7,7 @@
  */
 
 import { useEffect, useRef, useState } from "react";
+import LayerDecomposition from "@/components/LayerDecomposition";
 
 const HERO_URL =
   "https://private-us-east-1.manuscdn.com/sessionFile/LFOR5ktuK8fd7hlaiJO9Mh/sandbox/ptDhhstl7fw5tcWt6mgAFo-img-1_1771835048000_na1fn_bWluYXJkLWhlcm8.jpg?x-oss-process=image/resize,w_1920,h_1920/format,webp/quality,q_80&Expires=1798761600&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvTEZPUjVrdHVLOGZkN2hsYWlKTzlNaC9zYW5kYm94L3B0RGhoc3RsN2Z3NXRjV3Q2bWdBRm8taW1nLTFfMTc3MTgzNTA0ODAwMF9uYTFmbl9iV2x1WVhKa0xXaGxjbTguanBnP3gtb3NzLXByb2Nlc3M9aW1hZ2UvcmVzaXplLHdfMTkyMCxoXzE5MjAvZm9ybWF0LHdlYnAvcXVhbGl0eSxxXzgwIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzk4NzYxNjAwfX19XX0_&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=lfDgIRWNkb5a-yeL~JlrmZhoBPaPhPL3qGQZ-Ic7Dj2HKUyVAmX-8skOAZOlqeIPmLY2NCMjoUfmfKgd7qCgms8mC32A~Bg7qi2CM6sWcAk95GmWGjpBRNb6gvUDtEXB8Zhu-SNq9eWTrqn09PHltLyeewcFjK864YO5Tgy5XxTpRZc7uU7jpFVXaooPFtomraPYpSQ4Z7RZ82reAk0GGaq~IkMEw4OLhmwTh1c5xYcbz-jiqX26pyfHYMfipcm5O4faKuTRGkOD9OpfsJhL~oX6VUze-XkZgogcikO0rPhpDcevS0OU2YYz7gl-15l77rCBwBwsUBy60LgN0IGifg__";
@@ -288,13 +289,20 @@ export default function Home() {
 
         <SectionDivider />
 
-        {/* ── SECTION 3: WEAKNESSES ── */}
+        {/* ── SECTION 3: LAYER DECOMPOSITION ── */}
+        <AnimatedSection>
+          <LayerDecomposition />
+        </AnimatedSection>
+
+        <SectionDivider />
+
+        {/* ── SECTION 4: WEAKNESSES ── */}
         <AnimatedSection>
           <h2
             className="text-3xl font-semibold mb-6"
             style={{ fontFamily: "'Cormorant Garamond', serif", color: "oklch(0.75 0.12 75)" }}
           >
-            III. A Critical Eye: Weaknesses and Limitations
+            IV. A Critical Eye: Weaknesses and Limitations
           </h2>
 
           <p className="mb-5 leading-relaxed" style={{ lineHeight: 1.9 }}>
@@ -340,7 +348,7 @@ export default function Home() {
             className="text-3xl font-semibold mb-6"
             style={{ fontFamily: "'Cormorant Garamond', serif", color: "oklch(0.75 0.12 75)" }}
           >
-            IV. Reimagining Minard: Potential Improvements
+            V. Reimagining Minard: Potential Improvements
           </h2>
 
           <p className="mb-5 leading-relaxed" style={{ lineHeight: 1.9 }}>
