@@ -1,11 +1,11 @@
 /*
  * DESIGN PHILOSOPHY: Dark Academic / Manuscript Illumination
  * Interactive layer decomposition section — shows Minard's map broken into
- * its three constituent chart layers (army size, route, temperature) then combined.
- * Uses Recharts with the dark academic palette.
+ * its three constituent chart layers (army size, route, temperature) then combined,
+ * plus Tab 05: a modern interactive SVG interpretation of Minard's original.
  */
 
-import { useState } from "react";
+import { useState, useRef, useCallback } from "react";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   LineChart, Line, ScatterChart, Scatter, Legend,
@@ -14,15 +14,15 @@ import {
 // ── DATA ──────────────────────────────────────────────────────────────────────
 
 const armyData = [
-  { place: "Niemen", troops: 422000, phase: "advance" },
-  { place: "Vilna",  troops: 400000, phase: "advance" },
-  { place: "Vitebsk",troops: 175000, phase: "advance" },
-  { place: "Smolensk",troops:145000, phase: "advance" },
-  { place: "Moscow", troops: 100000, phase: "advance" },
-  { place: "Smolensk↩", troops: 55000,  phase: "retreat" },
-  { place: "Minsk↩",    troops: 37000,  phase: "retreat" },
-  { place: "Vilna↩",    troops: 12000,  phase: "retreat" },
-  { place: "Niemen↩",   troops: 10000,  phase: "retreat" },
+  { place: "Niemen",     troops: 422000, phase: "advance" },
+  { place: "Vilna",      troops: 400000, phase: "advance" },
+  { place: "Vitebsk",    troops: 175000, phase: "advance" },
+  { place: "Smolensk",   troops: 145000, phase: "advance" },
+  { place: "Moscow",     troops: 100000, phase: "advance" },
+  { place: "Smolensk↩",  troops: 55000,  phase: "retreat" },
+  { place: "Minsk↩",     troops: 37000,  phase: "retreat" },
+  { place: "Vilna↩",     troops: 12000,  phase: "retreat" },
+  { place: "Niemen↩",    troops: 10000,  phase: "retreat" },
 ];
 
 const advanceRoute = [
@@ -41,7 +41,7 @@ const retreatRoute = [
 ];
 
 const temperatureData = [
-  { date: "Oct 18", celsius: 0,    reaum: 0 },
+  { date: "Oct 18", celsius: 0,     reaum: 0 },
   { date: "Oct 24", celsius: -11.3, reaum: -9 },
   { date: "Nov 9",  celsius: -26.3, reaum: -21 },
   { date: "Nov 14", celsius: -13.8, reaum: -11 },
@@ -51,16 +51,32 @@ const temperatureData = [
   { date: "Dec 7",  celsius: -32.5, reaum: -26 },
 ];
 
+// ── MODERN MINARD DATA ────────────────────────────────────────────────────────
+// Each waypoint: x position (0–1), troop count, label, phase, date, temp (retreat only)
+const MINARD_NODES = [
+  // Advance (left → right)
+  { id: 0,  x: 0.00, troops: 422000, label: "Niemen",    phase: "advance", date: "Jun 1812",  temp: null },
+  { id: 1,  x: 0.10, troops: 400000, label: "Vilna",     phase: "advance", date: "Jul 1812",  temp: null },
+  { id: 2,  x: 0.28, troops: 175000, label: "Vitebsk",   phase: "advance", date: "Jul 1812",  temp: null },
+  { id: 3,  x: 0.44, troops: 145000, label: "Smolensk",  phase: "advance", date: "Aug 1812",  temp: null },
+  { id: 4,  x: 0.70, troops: 100000, label: "Moscow",    phase: "advance", date: "Sep 1812",  temp: 0 },
+  // Retreat (right → left)
+  { id: 5,  x: 0.44, troops: 55000,  label: "Smolensk",  phase: "retreat", date: "Nov 1812",  temp: -13.8 },
+  { id: 6,  x: 0.28, troops: 37000,  label: "Minsk",     phase: "retreat", date: "Nov 1812",  temp: -25.0 },
+  { id: 7,  x: 0.10, troops: 12000,  label: "Vilna",     phase: "retreat", date: "Dec 1812",  temp: -32.5 },
+  { id: 8,  x: 0.00, troops: 10000,  label: "Niemen",    phase: "retreat", date: "Dec 1812",  temp: -37.5 },
+];
+
 // ── COLOURS ───────────────────────────────────────────────────────────────────
-const GOLD    = "#c9a84c";
-const GOLD_DIM= "#8a6e30";
-const TAN     = "#d4af6a";
-const DARK_BAND = "#5a3a1a";
-const BLUE    = "#5882c8";
-const GRID_C  = "rgba(255,255,255,0.06)";
-const TICK_C  = "#a89878";
-const BG_CARD = "#251e14";
-const BG_DEEP = "#161009";
+const GOLD     = "#c9a84c";
+const GOLD_DIM = "#8a6e30";
+const TAN      = "#d4af6a";
+const DARK_BAND= "#5a3a1a";
+const BLUE     = "#5882c8";
+const GRID_C   = "rgba(255,255,255,0.06)";
+const TICK_C   = "#a89878";
+const BG_CARD  = "#251e14";
+const BG_DEEP  = "#161009";
 
 // ── SHARED CHART STYLES ───────────────────────────────────────────────────────
 const axisStyle = { fill: TICK_C, fontSize: 11, fontFamily: "'Fira Mono', monospace" };
@@ -76,6 +92,7 @@ const TABS = [
   { id: "route",       label: "02 — Route" },
   { id: "temperature", label: "03 — Temperature" },
   { id: "combined",    label: "04 — Combined" },
+  { id: "modern",      label: "05 — Modern Minard" },
 ];
 
 // ── CUSTOM TOOLTIP FORMATTERS ─────────────────────────────────────────────────
@@ -127,7 +144,267 @@ const DESCRIPTIONS: Record<string, { title: string; body: string }> = {
     title: "Layer 4 — The Combined Argument",
     body: "When army size, geographic route, and temperature are fused — as Minard did — each layer alone becomes unremarkable. Together, they construct an argument: the army advanced in strength, reached Moscow, and was then destroyed by the Russian winter on the retreat. No prose is required. This is the power of multivariate integration.",
   },
+  modern: {
+    title: "Layer 5 — A Modern Interactive Interpretation",
+    body: "This panel reimagines Minard's map with contemporary tools: a proportional flow band encoding army size, colour distinguishing advance (tan) from retreat (dark), and a live temperature gradient beneath the retreat path. Hover over any waypoint to reveal exact troop counts, dates, and temperatures. This addresses two of Minard's key weaknesses — the absence of tooltips for precise data and the inaccessibility of the Réaumur temperature scale — while preserving the original's narrative power.",
+  },
 };
+
+// ── MODERN MINARD SVG COMPONENT ───────────────────────────────────────────────
+function ModernMinardChart() {
+  const [tooltip, setTooltip] = useState<{
+    node: typeof MINARD_NODES[0];
+    x: number;
+    y: number;
+  } | null>(null);
+  const svgRef = useRef<SVGSVGElement>(null);
+
+  const W = 700;
+  const H_FLOW = 200;   // height of flow band area
+  const H_TEMP = 100;   // height of temperature area
+  const H_TOTAL = H_FLOW + H_TEMP + 40; // +40 for labels
+  const PAD_L = 40;
+  const PAD_R = 20;
+  const BAND_W = W - PAD_L - PAD_R;
+  const MAX_TROOPS = 422000;
+  const MAX_BAND_H = 120; // max band half-height in px
+
+  // Scale troops → band half-height
+  const scale = (t: number) => (t / MAX_TROOPS) * MAX_BAND_H;
+
+  // x position for a node
+  const nx = (node: typeof MINARD_NODES[0]) => PAD_L + node.x * BAND_W;
+
+  // Advance nodes (ids 0–4), retreat nodes (ids 4–8, reversed for path)
+  const advNodes = MINARD_NODES.filter(n => n.phase === "advance");
+  const retNodes = MINARD_NODES.filter(n => n.phase === "retreat");
+
+  // Centre line y for the flow band
+  const CY = H_FLOW / 2 + 10;
+
+  // Build advance polygon: top edge left→right, bottom edge right→left
+  const advTop = advNodes.map(n => `${nx(n)},${CY - scale(n.troops)}`).join(" ");
+  const advBot = [...advNodes].reverse().map(n => `${nx(n)},${CY + scale(n.troops)}`).join(" ");
+  const advPoly = `${advTop} ${advBot}`;
+
+  // Build retreat polygon (Moscow → Niemen)
+  const retTop = retNodes.map(n => `${nx(n)},${CY - scale(n.troops)}`).join(" ");
+  const retBot = [...retNodes].reverse().map(n => `${nx(n)},${CY + scale(n.troops)}`).join(" ");
+  const retPoly = `${retTop} ${retBot}`;
+
+  // Temperature line (retreat nodes that have temp, mapped to temp chart area)
+  const tempNodes = retNodes.filter(n => n.temp !== null);
+  const TEMP_Y_TOP = H_FLOW + 30;
+  const TEMP_MIN = -40;
+  const TEMP_MAX = 5;
+  const tempY = (t: number) =>
+    TEMP_Y_TOP + ((TEMP_MAX - t) / (TEMP_MAX - TEMP_MIN)) * H_TEMP;
+  const tempPath = tempNodes
+    .map((n, i) => `${i === 0 ? "M" : "L"}${nx(n)},${tempY(n.temp!)}`)
+    .join(" ");
+
+  const handleMouseEnter = useCallback((node: typeof MINARD_NODES[0], e: React.MouseEvent) => {
+    const rect = svgRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    setTooltip({ node, x: e.clientX - rect.left, y: e.clientY - rect.top });
+  }, []);
+
+  const handleMouseLeave = useCallback(() => setTooltip(null), []);
+
+  // Unique city labels (advance pass only for top, retreat for bottom)
+  const advLabels = advNodes;
+  const retLabels = retNodes.filter(n => n.id !== 4); // skip Moscow duplicate
+
+  return (
+    <div style={{ position: "relative", width: "100%", overflowX: "auto" }}>
+      <svg
+        ref={svgRef}
+        viewBox={`0 0 ${W} ${H_TOTAL}`}
+        style={{ width: "100%", minWidth: 480, display: "block" }}
+        onMouseLeave={handleMouseLeave}
+      >
+        {/* ── Background ── */}
+        <rect x={0} y={0} width={W} height={H_TOTAL} fill={BG_DEEP} />
+
+        {/* ── Horizontal centre line ── */}
+        <line x1={PAD_L} y1={CY} x2={W - PAD_R} y2={CY}
+          stroke="rgba(255,255,255,0.06)" strokeWidth={1} />
+
+        {/* ── Advance band ── */}
+        <polygon points={advPoly} fill={TAN} fillOpacity={0.85} />
+
+        {/* ── Retreat band ── */}
+        <polygon points={retPoly} fill={DARK_BAND} fillOpacity={0.9} />
+
+        {/* ── Advance node dots + hover targets ── */}
+        {advNodes.map(n => (
+          <circle
+            key={`adv-${n.id}`}
+            cx={nx(n)} cy={CY} r={6}
+            fill={GOLD} stroke={BG_DEEP} strokeWidth={1.5}
+            style={{ cursor: "pointer" }}
+            onMouseEnter={e => handleMouseEnter(n, e)}
+          />
+        ))}
+
+        {/* ── Retreat node dots + hover targets ── */}
+        {retNodes.map(n => (
+          <circle
+            key={`ret-${n.id}`}
+            cx={nx(n)} cy={CY} r={6}
+            fill={GOLD_DIM} stroke={BG_DEEP} strokeWidth={1.5}
+            style={{ cursor: "pointer" }}
+            onMouseEnter={e => handleMouseEnter(n, e)}
+          />
+        ))}
+
+        {/* ── Advance city labels (above) ── */}
+        {advLabels.map(n => (
+          <text key={`albl-${n.id}`}
+            x={nx(n)} y={CY - scale(n.troops) - 8}
+            textAnchor="middle" fill={TICK_C}
+            fontSize={9} fontFamily="'Fira Mono', monospace"
+          >
+            {n.label}
+          </text>
+        ))}
+
+        {/* ── Retreat city labels (below band) ── */}
+        {retLabels.map(n => (
+          <text key={`rlbl-${n.id}`}
+            x={nx(n)} y={CY + scale(n.troops) + 14}
+            textAnchor="middle" fill={TICK_C}
+            fontSize={9} fontFamily="'Fira Mono', monospace"
+          >
+            {n.label}
+          </text>
+        ))}
+
+        {/* ── "ADVANCE" / "RETREAT" labels ── */}
+        <text x={PAD_L + BAND_W * 0.22} y={CY - MAX_BAND_H - 16}
+          textAnchor="middle" fill={TAN} fontSize={9}
+          fontFamily="'Fira Mono', monospace" letterSpacing={2}>
+          ADVANCE →
+        </text>
+        <text x={PAD_L + BAND_W * 0.22} y={CY + MAX_BAND_H + 28}
+          textAnchor="middle" fill={DARK_BAND} fontSize={9}
+          fontFamily="'Fira Mono', monospace" letterSpacing={2}
+          style={{ fill: "#8a6040" }}>
+          ← RETREAT
+        </text>
+
+        {/* ── Temperature section divider ── */}
+        <line x1={PAD_L} y1={H_FLOW + 22} x2={W - PAD_R} y2={H_FLOW + 22}
+          stroke="rgba(255,255,255,0.08)" strokeWidth={1} strokeDasharray="4 4" />
+        <text x={PAD_L} y={H_FLOW + 18}
+          fill={BLUE} fontSize={8} fontFamily="'Fira Mono', monospace" opacity={0.7}>
+          TEMPERATURE (°C) — RETREAT PHASE
+        </text>
+
+        {/* ── Temperature zero line ── */}
+        <line x1={PAD_L} y1={tempY(0)} x2={W - PAD_R} y2={tempY(0)}
+          stroke="rgba(88,130,200,0.15)" strokeWidth={1} />
+        <text x={PAD_L - 4} y={tempY(0) + 3}
+          textAnchor="end" fill={BLUE} fontSize={8} fontFamily="'Fira Mono', monospace" opacity={0.6}>
+          0°
+        </text>
+        <text x={PAD_L - 4} y={tempY(-40) + 3}
+          textAnchor="end" fill={BLUE} fontSize={8} fontFamily="'Fira Mono', monospace" opacity={0.6}>
+          -40°
+        </text>
+
+        {/* ── Temperature path ── */}
+        <path d={tempPath} fill="none" stroke={BLUE} strokeWidth={2} strokeLinejoin="round" />
+
+        {/* ── Temperature dots ── */}
+        {tempNodes.map(n => (
+          <circle key={`tmp-${n.id}`}
+            cx={nx(n)} cy={tempY(n.temp!)} r={3.5}
+            fill={BLUE} stroke={BG_DEEP} strokeWidth={1}
+            style={{ cursor: "pointer" }}
+            onMouseEnter={e => handleMouseEnter(n, e)}
+          />
+        ))}
+
+        {/* ── Temperature shading ── */}
+        <defs>
+          <linearGradient id="tempGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor={BLUE} stopOpacity={0.15} />
+            <stop offset="100%" stopColor={BLUE} stopOpacity={0.02} />
+          </linearGradient>
+        </defs>
+        {tempNodes.length > 1 && (
+          <path
+            d={`${tempPath} L${nx(tempNodes[tempNodes.length - 1])},${H_FLOW + 30 + H_TEMP} L${nx(tempNodes[0])},${H_FLOW + 30 + H_TEMP} Z`}
+            fill="url(#tempGrad)"
+          />
+        )}
+
+        {/* ── Troop count annotations at key points ── */}
+        {[MINARD_NODES[0], MINARD_NODES[4], MINARD_NODES[8]].map(n => (
+          <text key={`ann-${n.id}`}
+            x={nx(n)} y={CY + 4}
+            textAnchor="middle" fill="rgba(255,255,255,0.55)"
+            fontSize={8} fontFamily="'Fira Mono', monospace"
+          >
+            {(n.troops / 1000).toFixed(0)}k
+          </text>
+        ))}
+      </svg>
+
+      {/* ── Tooltip ── */}
+      {tooltip && (
+        <div
+          style={{
+            position: "absolute",
+            left: tooltip.x + 12,
+            top: tooltip.y - 10,
+            background: BG_CARD,
+            border: `1px solid ${GOLD_DIM}`,
+            borderRadius: 2,
+            padding: "0.5rem 0.75rem",
+            fontFamily: "'Lora', serif",
+            fontSize: 12,
+            color: "#ede8dc",
+            pointerEvents: "none",
+            zIndex: 10,
+            minWidth: 140,
+            boxShadow: "0 4px 16px rgba(0,0,0,0.6)",
+          }}
+        >
+          <p style={{ color: GOLD, fontFamily: "'Fira Mono', monospace", fontSize: 10, marginBottom: 4 }}>
+            {tooltip.node.label} — {tooltip.node.phase === "advance" ? "Advance" : "Retreat"}
+          </p>
+          <p><span style={{ color: TICK_C }}>Troops:</span> {tooltip.node.troops.toLocaleString()}</p>
+          <p><span style={{ color: TICK_C }}>Date:</span> {tooltip.node.date}</p>
+          {tooltip.node.temp !== null && (
+            <p><span style={{ color: BLUE }}>Temp:</span> {tooltip.node.temp}°C</p>
+          )}
+        </div>
+      )}
+
+      {/* ── Legend ── */}
+      <div style={{ display: "flex", gap: "1.5rem", marginTop: "0.75rem", paddingLeft: PAD_L }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
+          <div style={{ width: 24, height: 10, background: TAN, borderRadius: 1 }} />
+          <span style={{ fontFamily: "'Fira Mono', monospace", fontSize: 10, color: TICK_C }}>Advance</span>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
+          <div style={{ width: 24, height: 10, background: DARK_BAND, borderRadius: 1 }} />
+          <span style={{ fontFamily: "'Fira Mono', monospace", fontSize: 10, color: TICK_C }}>Retreat</span>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
+          <div style={{ width: 24, height: 2, background: BLUE, borderRadius: 1 }} />
+          <span style={{ fontFamily: "'Fira Mono', monospace", fontSize: 10, color: TICK_C }}>Temperature</span>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
+          <div style={{ width: 8, height: 8, background: GOLD, borderRadius: "50%" }} />
+          <span style={{ fontFamily: "'Fira Mono', monospace", fontSize: 10, color: TICK_C }}>Hover for data</span>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 // ── MAIN COMPONENT ────────────────────────────────────────────────────────────
 export default function LayerDecomposition() {
@@ -165,7 +442,7 @@ export default function LayerDecomposition() {
           fontFamily: "'Lora', serif",
         }}
       >
-        Minard's map is the product of several distinct data layers, each encoding a separate variable. Isolating these layers reveals how each contributes to the whole — and how their combination produces an argument no single chart could make alone.
+        Minard's map is the product of several distinct data layers, each encoding a separate variable. Isolating these layers reveals how each contributes to the whole — and how their combination produces an argument no single chart could make alone. Tab 05 presents a modern interactive interpretation.
       </p>
 
       {/* Tabs */}
@@ -179,9 +456,15 @@ export default function LayerDecomposition() {
               fontSize: "0.76rem",
               letterSpacing: "0.04em",
               padding: "0.4rem 1rem",
-              border: `1px solid ${active === tab.id ? GOLD : "rgba(58,48,32,0.8)"}`,
-              background: active === tab.id ? "rgba(201,168,76,0.1)" : "transparent",
-              color: active === tab.id ? GOLD : TICK_C,
+              border: `1px solid ${active === tab.id ? (tab.id === "modern" ? "#5882c8" : GOLD) : "rgba(58,48,32,0.8)"}`,
+              background: active === tab.id
+                ? tab.id === "modern"
+                  ? "rgba(88,130,200,0.12)"
+                  : "rgba(201,168,76,0.1)"
+                : "transparent",
+              color: active === tab.id
+                ? tab.id === "modern" ? "#5882c8" : GOLD
+                : TICK_C,
               borderRadius: 2,
               cursor: "pointer",
               transition: "all 0.18s ease",
@@ -198,7 +481,7 @@ export default function LayerDecomposition() {
           background: BG_DEEP,
           border: `1px solid rgba(58,48,32,0.6)`,
           borderRadius: 2,
-          padding: "1.25rem 1rem 0.75rem",
+          padding: active === "modern" ? "1.25rem 1rem 1rem" : "1.25rem 1rem 0.75rem",
         }}
       >
         {/* ── PANEL 1: ARMY SIZE ── */}
@@ -209,13 +492,7 @@ export default function LayerDecomposition() {
               <XAxis dataKey="place" tick={axisStyle} angle={-30} textAnchor="end" interval={0} />
               <YAxis tick={axisStyle} tickFormatter={(v) => v >= 1000 ? `${v / 1000}k` : v} />
               <Tooltip content={<ArmyTooltip />} cursor={{ fill: "rgba(255,255,255,0.04)" }} />
-              <Bar
-                dataKey="troops"
-                radius={[1, 1, 0, 0]}
-                fill={TAN}
-                // colour retreat bars darker
-                label={false}
-              >
+              <Bar dataKey="troops" radius={[1, 1, 0, 0]}>
                 {armyData.map((entry, i) => (
                   <rect key={i} fill={entry.phase === "retreat" ? DARK_BAND : TAN} />
                 ))}
@@ -229,8 +506,10 @@ export default function LayerDecomposition() {
           <ResponsiveContainer width="100%" height={300}>
             <ScatterChart margin={{ top: 8, right: 24, left: 0, bottom: 8 }}>
               <CartesianGrid strokeDasharray="3 3" stroke={GRID_C} />
-              <XAxis dataKey="lon" type="number" name="Longitude" domain={[22, 40]} tick={axisStyle} label={{ value: "Longitude (°E)", position: "insideBottom", offset: -4, fill: TICK_C, fontSize: 11, fontFamily: "'Fira Mono', monospace" }} />
-              <YAxis dataKey="lat" type="number" name="Latitude" domain={[52, 57]} tick={axisStyle} label={{ value: "Latitude (°N)", angle: -90, position: "insideLeft", fill: TICK_C, fontSize: 11, fontFamily: "'Fira Mono', monospace" }} />
+              <XAxis dataKey="lon" type="number" name="Longitude" domain={[22, 40]} tick={axisStyle}
+                label={{ value: "Longitude (°E)", position: "insideBottom", offset: -4, fill: TICK_C, fontSize: 11, fontFamily: "'Fira Mono', monospace" }} />
+              <YAxis dataKey="lat" type="number" name="Latitude" domain={[52, 57]} tick={axisStyle}
+                label={{ value: "Latitude (°N)", angle: -90, position: "insideLeft", fill: TICK_C, fontSize: 11, fontFamily: "'Fira Mono', monospace" }} />
               <Tooltip content={<RouteTooltip />} cursor={{ strokeDasharray: "3 3" }} />
               <Legend wrapperStyle={{ fontFamily: "'Fira Mono', monospace", fontSize: 11, color: TICK_C }} />
               <Scatter name="Advance" data={advanceRoute} line={{ stroke: TAN, strokeWidth: 2 }} fill={TAN} />
@@ -247,15 +526,8 @@ export default function LayerDecomposition() {
               <XAxis dataKey="date" tick={axisStyle} />
               <YAxis tick={axisStyle} tickFormatter={(v) => `${v}°C`} />
               <Tooltip content={<TempTooltip />} />
-              <Line
-                type="monotone"
-                dataKey="celsius"
-                stroke={BLUE}
-                strokeWidth={2}
-                dot={{ fill: BLUE, r: 4 }}
-                activeDot={{ r: 6 }}
-                name="Temperature (°C)"
-              />
+              <Line type="monotone" dataKey="celsius" stroke={BLUE} strokeWidth={2}
+                dot={{ fill: BLUE, r: 4 }} activeDot={{ r: 6 }} name="Temperature (°C)" />
             </LineChart>
           </ResponsiveContainer>
         )}
@@ -264,7 +536,6 @@ export default function LayerDecomposition() {
         {active === "combined" && (
           <div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginBottom: "1rem" }}>
-              {/* Mini army */}
               <div>
                 <p style={{ fontFamily: "'Fira Mono', monospace", fontSize: "0.68rem", color: GOLD_DIM, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "0.4rem" }}>Army Size</p>
                 <ResponsiveContainer width="100%" height={150}>
@@ -280,7 +551,6 @@ export default function LayerDecomposition() {
                   </BarChart>
                 </ResponsiveContainer>
               </div>
-              {/* Mini route */}
               <div>
                 <p style={{ fontFamily: "'Fira Mono', monospace", fontSize: "0.68rem", color: GOLD_DIM, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "0.4rem" }}>Geographic Route</p>
                 <ResponsiveContainer width="100%" height={150}>
@@ -294,9 +564,7 @@ export default function LayerDecomposition() {
                 </ResponsiveContainer>
               </div>
             </div>
-            {/* Arrow */}
             <p style={{ textAlign: "center", color: GOLD_DIM, fontSize: "1.2rem", margin: "0.25rem 0" }}>↓ combined with ↓</p>
-            {/* Mini temperature */}
             <div>
               <p style={{ fontFamily: "'Fira Mono', monospace", fontSize: "0.68rem", color: GOLD_DIM, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "0.4rem" }}>Temperature (retreat phase)</p>
               <ResponsiveContainer width="100%" height={130}>
@@ -310,6 +578,9 @@ export default function LayerDecomposition() {
             </div>
           </div>
         )}
+
+        {/* ── PANEL 5: MODERN MINARD ── */}
+        {active === "modern" && <ModernMinardChart />}
       </div>
 
       {/* Description */}
@@ -317,15 +588,15 @@ export default function LayerDecomposition() {
         style={{
           marginTop: "1rem",
           padding: "0.85rem 1.1rem",
-          borderLeft: `2px solid rgba(201,168,76,0.3)`,
-          background: "rgba(201,168,76,0.03)",
+          borderLeft: `2px solid ${active === "modern" ? "rgba(88,130,200,0.4)" : "rgba(201,168,76,0.3)"}`,
+          background: active === "modern" ? "rgba(88,130,200,0.04)" : "rgba(201,168,76,0.03)",
           fontSize: "0.9rem",
           lineHeight: 1.7,
           color: TICK_C,
           fontFamily: "'Lora', serif",
         }}
       >
-        <strong style={{ color: TAN }}>{desc.title}.</strong>{" "}
+        <strong style={{ color: active === "modern" ? "#7aa0d8" : TAN }}>{desc.title}.</strong>{" "}
         {desc.body}
       </div>
     </div>
