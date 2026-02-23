@@ -1,12 +1,11 @@
 /*
  * DESIGN PHILOSOPHY: Dark Academic / Manuscript Illumination
  * Interactive layer decomposition section — shows Minard's map broken into
- * its three constituent chart layers (army size, route, temperature) then combined,
- * plus Tab 05: a modern interactive SVG interpretation of Minard's original.
+ * its three constituent chart layers (army size, route, temperature) then combined.
+ * Uses Recharts with the dark academic palette.
  */
 
 import { useState } from "react";
-import ModernMinardChart from "./ModernMinard";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   LineChart, Line, ScatterChart, Scatter, Legend,
@@ -15,15 +14,15 @@ import {
 // ── DATA ──────────────────────────────────────────────────────────────────────
 
 const armyData = [
-  { place: "Niemen",     troops: 422000, phase: "advance" },
-  { place: "Vilna",      troops: 400000, phase: "advance" },
-  { place: "Vitebsk",    troops: 175000, phase: "advance" },
-  { place: "Smolensk",   troops: 145000, phase: "advance" },
-  { place: "Moscow",     troops: 100000, phase: "advance" },
-  { place: "Smolensk↩",  troops: 55000,  phase: "retreat" },
-  { place: "Minsk↩",     troops: 37000,  phase: "retreat" },
-  { place: "Vilna↩",     troops: 12000,  phase: "retreat" },
-  { place: "Niemen↩",    troops: 10000,  phase: "retreat" },
+  { place: "Niemen", troops: 422000, phase: "advance" },
+  { place: "Vilna",  troops: 400000, phase: "advance" },
+  { place: "Vitebsk",troops: 175000, phase: "advance" },
+  { place: "Smolensk",troops:145000, phase: "advance" },
+  { place: "Moscow", troops: 100000, phase: "advance" },
+  { place: "Smolensk↩", troops: 55000,  phase: "retreat" },
+  { place: "Minsk↩",    troops: 37000,  phase: "retreat" },
+  { place: "Vilna↩",    troops: 12000,  phase: "retreat" },
+  { place: "Niemen↩",   troops: 10000,  phase: "retreat" },
 ];
 
 const advanceRoute = [
@@ -42,7 +41,7 @@ const retreatRoute = [
 ];
 
 const temperatureData = [
-  { date: "Oct 18", celsius: 0,     reaum: 0 },
+  { date: "Oct 18", celsius: 0,    reaum: 0 },
   { date: "Oct 24", celsius: -11.3, reaum: -9 },
   { date: "Nov 9",  celsius: -26.3, reaum: -21 },
   { date: "Nov 14", celsius: -13.8, reaum: -11 },
@@ -52,18 +51,16 @@ const temperatureData = [
   { date: "Dec 7",  celsius: -32.5, reaum: -26 },
 ];
 
-
-
 // ── COLOURS ───────────────────────────────────────────────────────────────────
-const GOLD     = "#c9a84c";
-const GOLD_DIM = "#8a6e30";
-const TAN      = "#d4af6a";
-const DARK_BAND= "#5a3a1a";
-const BLUE     = "#5882c8";
-const GRID_C   = "rgba(255,255,255,0.06)";
-const TICK_C   = "#a89878";
-const BG_CARD  = "#251e14";
-const BG_DEEP  = "#161009";
+const GOLD    = "#c9a84c";
+const GOLD_DIM= "#8a6e30";
+const TAN     = "#d4af6a";
+const DARK_BAND = "#5a3a1a";
+const BLUE    = "#5882c8";
+const GRID_C  = "rgba(255,255,255,0.06)";
+const TICK_C  = "#a89878";
+const BG_CARD = "#251e14";
+const BG_DEEP = "#161009";
 
 // ── SHARED CHART STYLES ───────────────────────────────────────────────────────
 const axisStyle = { fill: TICK_C, fontSize: 11, fontFamily: "'Fira Mono', monospace" };
@@ -79,7 +76,6 @@ const TABS = [
   { id: "route",       label: "02 — Route" },
   { id: "temperature", label: "03 — Temperature" },
   { id: "combined",    label: "04 — Combined" },
-  { id: "modern",      label: "05 — Modern Minard" },
 ];
 
 // ── CUSTOM TOOLTIP FORMATTERS ─────────────────────────────────────────────────
@@ -131,13 +127,7 @@ const DESCRIPTIONS: Record<string, { title: string; body: string }> = {
     title: "Layer 4 — The Combined Argument",
     body: "When army size, geographic route, and temperature are fused — as Minard did — each layer alone becomes unremarkable. Together, they construct an argument: the army advanced in strength, reached Moscow, and was then destroyed by the Russian winter on the retreat. No prose is required. This is the power of multivariate integration.",
   },
-  modern: {
-    title: "Layer 5 — A Modern Interactive Interpretation",
-    body: "This panel reimagines Minard's map with contemporary tools: a proportional flow band encoding army size, colour distinguishing advance (tan) from retreat (dark), and a live temperature gradient beneath the retreat path. Hover over any waypoint to reveal exact troop counts, dates, and temperatures. This addresses two of Minard's key weaknesses — the absence of tooltips for precise data and the inaccessibility of the Réaumur temperature scale — while preserving the original's narrative power.",
-  },
 };
-
-
 
 // ── MAIN COMPONENT ────────────────────────────────────────────────────────────
 export default function LayerDecomposition() {
@@ -175,7 +165,7 @@ export default function LayerDecomposition() {
           fontFamily: "'Lora', serif",
         }}
       >
-        Minard's map is the product of several distinct data layers, each encoding a separate variable. Isolating these layers reveals how each contributes to the whole — and how their combination produces an argument no single chart could make alone. Tab 05 presents a modern interactive interpretation.
+        Minard's map is the product of several distinct data layers, each encoding a separate variable. Isolating these layers reveals how each contributes to the whole — and how their combination produces an argument no single chart could make alone.
       </p>
 
       {/* Tabs */}
@@ -189,15 +179,9 @@ export default function LayerDecomposition() {
               fontSize: "0.76rem",
               letterSpacing: "0.04em",
               padding: "0.4rem 1rem",
-              border: `1px solid ${active === tab.id ? (tab.id === "modern" ? "#5882c8" : GOLD) : "rgba(58,48,32,0.8)"}`,
-              background: active === tab.id
-                ? tab.id === "modern"
-                  ? "rgba(88,130,200,0.12)"
-                  : "rgba(201,168,76,0.1)"
-                : "transparent",
-              color: active === tab.id
-                ? tab.id === "modern" ? "#5882c8" : GOLD
-                : TICK_C,
+              border: `1px solid ${active === tab.id ? GOLD : "rgba(58,48,32,0.8)"}`,
+              background: active === tab.id ? "rgba(201,168,76,0.1)" : "transparent",
+              color: active === tab.id ? GOLD : TICK_C,
               borderRadius: 2,
               cursor: "pointer",
               transition: "all 0.18s ease",
@@ -214,7 +198,7 @@ export default function LayerDecomposition() {
           background: BG_DEEP,
           border: `1px solid rgba(58,48,32,0.6)`,
           borderRadius: 2,
-          padding: active === "modern" ? "1.25rem 1rem 1rem" : "1.25rem 1rem 0.75rem",
+          padding: "1.25rem 1rem 0.75rem",
         }}
       >
         {/* ── PANEL 1: ARMY SIZE ── */}
@@ -225,7 +209,13 @@ export default function LayerDecomposition() {
               <XAxis dataKey="place" tick={axisStyle} angle={-30} textAnchor="end" interval={0} />
               <YAxis tick={axisStyle} tickFormatter={(v) => v >= 1000 ? `${v / 1000}k` : v} />
               <Tooltip content={<ArmyTooltip />} cursor={{ fill: "rgba(255,255,255,0.04)" }} />
-              <Bar dataKey="troops" radius={[1, 1, 0, 0]}>
+              <Bar
+                dataKey="troops"
+                radius={[1, 1, 0, 0]}
+                fill={TAN}
+                // colour retreat bars darker
+                label={false}
+              >
                 {armyData.map((entry, i) => (
                   <rect key={i} fill={entry.phase === "retreat" ? DARK_BAND : TAN} />
                 ))}
@@ -239,10 +229,8 @@ export default function LayerDecomposition() {
           <ResponsiveContainer width="100%" height={300}>
             <ScatterChart margin={{ top: 8, right: 24, left: 0, bottom: 8 }}>
               <CartesianGrid strokeDasharray="3 3" stroke={GRID_C} />
-              <XAxis dataKey="lon" type="number" name="Longitude" domain={[22, 40]} tick={axisStyle}
-                label={{ value: "Longitude (°E)", position: "insideBottom", offset: -4, fill: TICK_C, fontSize: 11, fontFamily: "'Fira Mono', monospace" }} />
-              <YAxis dataKey="lat" type="number" name="Latitude" domain={[52, 57]} tick={axisStyle}
-                label={{ value: "Latitude (°N)", angle: -90, position: "insideLeft", fill: TICK_C, fontSize: 11, fontFamily: "'Fira Mono', monospace" }} />
+              <XAxis dataKey="lon" type="number" name="Longitude" domain={[22, 40]} tick={axisStyle} label={{ value: "Longitude (°E)", position: "insideBottom", offset: -4, fill: TICK_C, fontSize: 11, fontFamily: "'Fira Mono', monospace" }} />
+              <YAxis dataKey="lat" type="number" name="Latitude" domain={[52, 57]} tick={axisStyle} label={{ value: "Latitude (°N)", angle: -90, position: "insideLeft", fill: TICK_C, fontSize: 11, fontFamily: "'Fira Mono', monospace" }} />
               <Tooltip content={<RouteTooltip />} cursor={{ strokeDasharray: "3 3" }} />
               <Legend wrapperStyle={{ fontFamily: "'Fira Mono', monospace", fontSize: 11, color: TICK_C }} />
               <Scatter name="Advance" data={advanceRoute} line={{ stroke: TAN, strokeWidth: 2 }} fill={TAN} />
@@ -259,8 +247,15 @@ export default function LayerDecomposition() {
               <XAxis dataKey="date" tick={axisStyle} />
               <YAxis tick={axisStyle} tickFormatter={(v) => `${v}°C`} />
               <Tooltip content={<TempTooltip />} />
-              <Line type="monotone" dataKey="celsius" stroke={BLUE} strokeWidth={2}
-                dot={{ fill: BLUE, r: 4 }} activeDot={{ r: 6 }} name="Temperature (°C)" />
+              <Line
+                type="monotone"
+                dataKey="celsius"
+                stroke={BLUE}
+                strokeWidth={2}
+                dot={{ fill: BLUE, r: 4 }}
+                activeDot={{ r: 6 }}
+                name="Temperature (°C)"
+              />
             </LineChart>
           </ResponsiveContainer>
         )}
@@ -269,6 +264,7 @@ export default function LayerDecomposition() {
         {active === "combined" && (
           <div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginBottom: "1rem" }}>
+              {/* Mini army */}
               <div>
                 <p style={{ fontFamily: "'Fira Mono', monospace", fontSize: "0.68rem", color: GOLD_DIM, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "0.4rem" }}>Army Size</p>
                 <ResponsiveContainer width="100%" height={150}>
@@ -284,6 +280,7 @@ export default function LayerDecomposition() {
                   </BarChart>
                 </ResponsiveContainer>
               </div>
+              {/* Mini route */}
               <div>
                 <p style={{ fontFamily: "'Fira Mono', monospace", fontSize: "0.68rem", color: GOLD_DIM, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "0.4rem" }}>Geographic Route</p>
                 <ResponsiveContainer width="100%" height={150}>
@@ -297,7 +294,9 @@ export default function LayerDecomposition() {
                 </ResponsiveContainer>
               </div>
             </div>
+            {/* Arrow */}
             <p style={{ textAlign: "center", color: GOLD_DIM, fontSize: "1.2rem", margin: "0.25rem 0" }}>↓ combined with ↓</p>
+            {/* Mini temperature */}
             <div>
               <p style={{ fontFamily: "'Fira Mono', monospace", fontSize: "0.68rem", color: GOLD_DIM, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "0.4rem" }}>Temperature (retreat phase)</p>
               <ResponsiveContainer width="100%" height={130}>
@@ -311,9 +310,6 @@ export default function LayerDecomposition() {
             </div>
           </div>
         )}
-
-        {/* ── PANEL 5: MODERN MINARD ── */}
-        {active === "modern" && <ModernMinardChart />}
       </div>
 
       {/* Description */}
@@ -321,15 +317,15 @@ export default function LayerDecomposition() {
         style={{
           marginTop: "1rem",
           padding: "0.85rem 1.1rem",
-          borderLeft: `2px solid ${active === "modern" ? "rgba(88,130,200,0.4)" : "rgba(201,168,76,0.3)"}`,
-          background: active === "modern" ? "rgba(88,130,200,0.04)" : "rgba(201,168,76,0.03)",
+          borderLeft: `2px solid rgba(201,168,76,0.3)`,
+          background: "rgba(201,168,76,0.03)",
           fontSize: "0.9rem",
           lineHeight: 1.7,
           color: TICK_C,
           fontFamily: "'Lora', serif",
         }}
       >
-        <strong style={{ color: active === "modern" ? "#7aa0d8" : TAN }}>{desc.title}.</strong>{" "}
+        <strong style={{ color: TAN }}>{desc.title}.</strong>{" "}
         {desc.body}
       </div>
     </div>
