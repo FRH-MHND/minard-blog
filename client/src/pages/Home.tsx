@@ -147,7 +147,7 @@ export default function Home() {
             className="text-sm tracking-[0.3em] uppercase mb-4"
             style={{ color: "oklch(0.75 0.12 75)", fontFamily: "'Fira Mono', monospace" }}
           >
-            martins-cool-datavis-website &nbsp;·&nbsp; Data Visualisation Analysis
+            Minard's 1869 Napoleon's Russian Campaign &nbsp;·&nbsp; Data Visualisation Analysis
           </p>
           <h1
             className="font-bold leading-tight mb-6"
@@ -170,7 +170,7 @@ export default function Home() {
           <div className="flex items-center gap-3 text-sm" style={{ color: "oklch(0.60 0.04 75)" }}>
             <span style={{ fontFamily: "'Fira Mono', monospace" }}>~1,100 words</span>
             <span>·</span>
-            <span>CMT218 — Data Visualisation</span>
+            <span>CMT218 Data Visualisation</span>
           </div>
         </div>
       </header>
@@ -447,7 +447,7 @@ export default function Home() {
       >
         <CompassOrnament size={24} />
         <p className="mt-4 text-sm" style={{ fontFamily: "'Fira Mono', monospace" }}>
-          CMT218 — Data Visualisation &nbsp;·&nbsp; Cardiff University
+          Farah Abdeljawwad &nbsp;·&nbsp; CMT218 Data Visualisation &nbsp;·&nbsp; Cardiff University
         </p>
         <p className="mt-1 text-xs" style={{ color: "oklch(0.40 0.03 65)" }}>
           Analysis of Minard's 1869 <em>Carte figurative</em> &nbsp;·&nbsp; 2025–26
