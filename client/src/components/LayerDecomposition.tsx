@@ -1,6 +1,6 @@
 /*
  * DESIGN PHILOSOPHY: Dark Academic / Manuscript Illumination
- * Interactive layer decomposition section — shows Minard's map broken into
+ * Interactive layer decomposition section - shows Minard's map broken into
  * its three constituent chart layers (army size, route, temperature) then combined.
  * Uses Recharts with the dark academic palette.
  */
@@ -72,10 +72,10 @@ const tooltipStyle = {
 
 // ── LAYER TABS ────────────────────────────────────────────────────────────────
 const TABS = [
-  { id: "flow",        label: "01 — Army Size" },
-  { id: "route",       label: "02 — Route" },
-  { id: "temperature", label: "03 — Temperature" },
-  { id: "combined",    label: "04 — Combined" },
+  { id: "flow",        label: "01 - Army Size" },
+  { id: "route",       label: "02 - Route" },
+  { id: "temperature", label: "03 - Temperature" },
+  { id: "combined",    label: "04 - Combined" },
 ];
 
 // ── CUSTOM TOOLTIP FORMATTERS ─────────────────────────────────────────────────
@@ -112,20 +112,20 @@ function TempTooltip({ active, payload, label }: any) {
 // ── CHART DESCRIPTIONS ────────────────────────────────────────────────────────
 const DESCRIPTIONS: Record<string, { title: string; body: string }> = {
   flow: {
-    title: "Layer 1 — Army Size (Band Width)",
-    body: "In isolation this is a straightforward bar chart of troop numbers at successive waypoints. The tan bars represent the advance; the dark bars the retreat. The dramatic collapse from 422,000 to ~10,000 is immediately legible. Bertin classifies size as the most effective quantitative retinal variable — the eye reads magnitude directly from area.",
+    title: "Layer 1 - Army Size (Band Width)",
+    body: "In isolation this is a straightforward bar chart of troop numbers at successive waypoints. The tan bars represent the advance; the dark bars the retreat. The dramatic collapse from 422,000 to ~10,000 is immediately legible. Bertin classifies size as the most effective quantitative retinal variable - the eye reads magnitude directly from area.",
   },
   route: {
-    title: "Layer 2 — Geographic Route (Position)",
-    body: "Stripped of the flow band, the route becomes a simple scatter/line plot — longitude on the x-axis, latitude on the y-axis. On its own it tells us nothing about losses; it merely traces a path. Position is Bertin's most fundamental variable, providing the spatial anchor onto which all other variables are hung.",
+    title: "Layer 2 - Geographic Route (Position)",
+    body: "Stripped of the flow band, the route becomes a simple scatter/line plot - longitude on the x-axis, latitude on the y-axis. On its own it tells us nothing about losses; it merely traces a path. Position is Bertin's most fundamental variable, providing the spatial anchor onto which all other variables are hung.",
   },
   temperature: {
-    title: "Layer 3 — Temperature (Réaumur → °C)",
-    body: "The temperature chart records readings taken during the retreat only, from October to December 1812. In isolation it is a time-series line chart. Its power emerges only when placed beneath the retreat band — the correlation between falling temperature and accelerating troop loss becomes visually undeniable. Note: Minard used the obsolete Réaumur scale; values here are converted to Celsius (°C = °Ré × 1.25).",
+    title: "Layer 3 - Temperature (Réaumur → °C)",
+    body: "The temperature chart records readings taken during the retreat only, from October to December 1812. In isolation it is a time-series line chart. Its power emerges only when placed beneath the retreat band - the correlation between falling temperature and accelerating troop loss becomes visually undeniable. Note: Minard used the obsolete Réaumur scale; values here are converted to Celsius (°C = °Ré × 1.25).",
   },
   combined: {
-    title: "Layer 4 — The Combined Argument",
-    body: "When army size, geographic route, and temperature are fused — as Minard did — each layer alone becomes unremarkable. Together, they construct an argument: the army advanced in strength, reached Moscow, and was then destroyed by the Russian winter on the retreat. No prose is required. This is the power of multivariate integration.",
+    title: "Layer 4 - The Combined Argument",
+    body: "When army size, geographic route, and temperature are fused - as Minard did - each layer alone becomes unremarkable. Together, they construct an argument: the army advanced in strength, reached Moscow, and was then destroyed by the Russian winter on the retreat. No prose is required. This is the power of multivariate integration.",
   },
 };
 

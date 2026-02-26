@@ -213,7 +213,7 @@ export default function Home() {
               className="mt-3 text-center text-sm italic"
               style={{ color: "oklch(0.60 0.05 75)", fontFamily: "'Fira Mono', monospace" }}
             >
-              Fig. 1 — Minard, C.J. (1869). <em>Carte figurative des pertes successives en hommes de l'Armée Française dans la campagne de Russie 1812–1813.</em> Paris. [Translated version shown.]
+              Fig. 1 - Minard, C.J. (1869). <em>Carte figurative des pertes successives en hommes de l'Armée Française dans la campagne de Russie 1812–1813.</em> Paris. [Translated version shown.]
             </figcaption>
           </figure>
         </AnimatedSection>
@@ -259,7 +259,7 @@ export default function Home() {
               </tbody>
             </table>
             <p className="mt-2 text-xs" style={{ color: "oklch(0.55 0.04 75)", fontFamily: "'Fira Mono', monospace" }}>
-              Table 1 — Minard's six variables mapped against Bertin's (1983) <span className="ref-num">[3]</span> visual variable taxonomy.
+              Table 1 - Minard's six variables mapped against Bertin's (1983) <span className="ref-num">[3]</span> visual variable taxonomy.
             </p>
           </div>
 
@@ -287,7 +287,7 @@ export default function Home() {
 
           <div className="pull-quote">
             "Graphical excellence is that which gives to the viewer the greatest number of ideas in the shortest time with the least ink in the smallest space."
-            <footer className="mt-2 text-sm not-italic" style={{ color: "oklch(0.60 0.05 75)" }}>— Edward Tufte, <em>The Visual Display of Quantitative Information</em> (2001)</footer>
+            <footer className="mt-2 text-sm not-italic" style={{ color: "oklch(0.60 0.05 75)" }}>- Edward Tufte, <em>The Visual Display of Quantitative Information</em> (2001)</footer>
           </div>
 
           <p className="mb-5 leading-relaxed" style={{ lineHeight: 1.9 }}>
@@ -338,7 +338,7 @@ export default function Home() {
             The Sawtooth Attrition Effect
           </h3>
           <p className="mb-5 leading-relaxed" style={{ lineHeight: 1.9 }}>
-            A subtler but important design flaw concerns how the band narrows to represent troop losses. Because the band tapers symmetrically from both its upper and lower edges, each loss event is visually halved in impact. If 30,000 men were lost at a given point, the band jags by 15,000 along its top edge and 15,000 along its bottom — producing half the visual drama that a single-edge taper would achieve. The exception is the catastrophic crossing of the Berezina River, where the band narrows dramatically; but this is more a consequence of the scale of the loss than a deliberate design choice.
+            A subtler but important design flaw concerns how the band narrows to represent troop losses. Because the band tapers symmetrically from both its upper and lower edges, each loss event is visually halved in impact. If 30,000 men were lost at a given point, the band jags by 15,000 along its top edge and 15,000 along its bottom - producing half the visual drama that a single-edge taper would achieve. The exception is the catastrophic crossing of the Berezina River, where the band narrows dramatically; but this is more a consequence of the scale of the loss than a deliberate design choice.
           </p>
 
           <h3
@@ -348,7 +348,7 @@ export default function Home() {
             The Awkward Temperature Integration
           </h3>
           <p className="mb-5 leading-relaxed" style={{ lineHeight: 1.9 }}>
-            While the temperature chart is conceptually brilliant, its execution is technically problematic. The chart uses the Réaumur scale, now obsolete, requiring modern readers to perform a mental conversion. More critically, Minard connects his sporadic temperature readings with straight lines, implying a smooth and continuous decline in temperature that the underlying data does not support. This violates Cairo's (2012) <span className="ref-num">[4]</span> principle of truthfulness — the visual form should not imply greater precision or continuity than the data warrants. Furthermore, the visual similarity between the rising and falling contour of the temperature line and the geographical undulations of the retreat path creates a spurious visual correlation between the two, which can mislead the viewer.
+            While the temperature chart is conceptually brilliant, its execution is technically problematic. The chart uses the Réaumur scale, now obsolete, requiring modern readers to perform a mental conversion. More critically, Minard connects his sporadic temperature readings with straight lines, implying a smooth and continuous decline in temperature that the underlying data does not support. This violates Cairo's (2012) <span className="ref-num">[4]</span> principle of truthfulness - the visual form should not imply greater precision or continuity than the data warrants. Furthermore, the visual similarity between the rising and falling contour of the temperature line and the geographical undulations of the retreat path creates a spurious visual correlation between the two, which can mislead the viewer.
           </p>
         </AnimatedSection>
 
