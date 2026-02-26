@@ -6,7 +6,6 @@
  */
 
 import { useState } from "react";
-import ModernMinardChart from "./ModernMinard";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   LineChart, Line, ScatterChart, Scatter, Legend,
@@ -77,7 +76,6 @@ const TABS = [
   { id: "route",       label: "02 — Route" },
   { id: "temperature", label: "03 — Temperature" },
   { id: "combined",    label: "04 — Combined" },
-  { id: "modern",      label: "05 — Modern Minard" },
 ];
 
 // ── CUSTOM TOOLTIP FORMATTERS ─────────────────────────────────────────────────
@@ -128,10 +126,6 @@ const DESCRIPTIONS: Record<string, { title: string; body: string }> = {
   combined: {
     title: "Layer 4 — The Combined Argument",
     body: "When army size, geographic route, and temperature are fused — as Minard did — each layer alone becomes unremarkable. Together, they construct an argument: the army advanced in strength, reached Moscow, and was then destroyed by the Russian winter on the retreat. No prose is required. This is the power of multivariate integration.",
-  },
-  modern: {
-    title: "Layer 5 — Modern Interactive Interpretation",
-    body: "This interactive reimagining applies contemporary design principles to Minard's original argument. The advance (tan) and retreat (dark brown) bands are rendered as proportional flow polygons sharing a common geographic axis, with a temperature gradient beneath. Hover any waypoint to surface precise troop counts, dates, and temperature readings — the affordances Minard could not provide in 1869. The Réaumur readings are converted to Celsius on demand, addressing one of the original's most cited accessibility limitations.",
   },
 };
 
@@ -264,13 +258,6 @@ export default function LayerDecomposition() {
               />
             </LineChart>
           </ResponsiveContainer>
-        )}
-
-        {/* ── PANEL 5: MODERN MINARD ── */}
-        {active === "modern" && (
-          <div style={{ padding: "0.5rem 0" }}>
-            <ModernMinardChart />
-          </div>
         )}
 
         {/* ── PANEL 4: COMBINED ── */}
