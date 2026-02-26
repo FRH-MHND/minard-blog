@@ -392,7 +392,7 @@ export default function Home() {
           </p>
 
           <p className="mb-5 leading-relaxed" style={{ lineHeight: 1.9 }}>
-            Yet the map is also a product of its time and its limitations are instructive. The subordination of chronology to geography, the symmetric sawtooth attrition effect, and the technically imprecise temperature chart are not merely historical curiosities — they are reminders that even masterpieces involve design trade-offs. By studying where Minard succeeded and where he fell short, we sharpen our own understanding of what effective data visualisation demands: not merely the display of data, but the construction of a truthful, legible, and emotionally resonant argument.
+            However, this map remains a product of its time, and its limitations are considered instructive to later visualisations. The symmetric swatooth attrition effect, subordination of chronology to geography and technical imprecision of the temeprature chart are not merely historical curiosities, they serve as reminders that even masterpieces give into design trades offs.  By studying where Minard succeeded and where he fell short, we can sharpen our own understanding of what effective data visualisation demands: not merely the display of data, but the construction of a truthful, legible, and emotionally resonant argument.
           </p>
         </AnimatedSection>
 
