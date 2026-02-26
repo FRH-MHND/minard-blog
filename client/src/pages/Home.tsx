@@ -372,7 +372,7 @@ export default function Home() {
           </p>
 
           <p className="mb-5 leading-relaxed" style={{ lineHeight: 1.9 }}>
-            Finally, an <strong style={{ color: "oklch(0.85 0.06 75)" }}>interactive digital version</strong> could address many of the map's remaining limitations simultaneously. Tooltips could surface precise troop counts and dates at any point along the route; an animated timeline could correctly represent the Moscow pause; and the temperature scale could be converted to Celsius on demand. These affordances would preserve the graphic's powerful narrative structure while correcting its factual and perceptual distortions.
+            Finally, an <strong style={{ color: "oklch(0.85 0.06 75)" }}>interactive digital version</strong> could address many of the map's remaining limitations simultaneously. Tooltips could surface precise troop counts and dates at any point along the route, an animated timeline could correctly represent the Moscow pause, and the temperature scale could be converted to Celsius on demand. These affordances would preserve the graphic's powerful narrative structure while correcting its factual and perceptual distortions.
           </p>
         </AnimatedSection>
 
@@ -388,7 +388,7 @@ export default function Home() {
           </h2>
 
           <p className="mb-5 leading-relaxed" style={{ lineHeight: 1.9 }}>
-            Charles Joseph Minard's map of Napoleon's Russian campaign remains a towering achievement in the history of data visualisation. Its ability to encode six variables into a single, self-contained narrative — one that communicates the scale of a military catastrophe with immediate emotional force — is a standard that few visualisations, before or since, have matched. Tufte's admiration is well-founded: the map exemplifies nearly every principle of analytical design, from multivariate complexity to the integration of evidence.
+            Charles Joseph Minard's map of Napoleon's Russian campaign remains a leading and iconic achievement in the history of data visualisation. Its ability to encode six variables into a single, self-contained narrativ. One that communicates the scale of a military catastrophe with immediate emotional force. A standard that few visualisations, before or since Minard's, have matched. Tufte's admiration is well-founded: the map exemplifies nearly every principle of analytical design, from multivariate complexity to the integration of evidence.
           </p>
 
           <p className="mb-5 leading-relaxed" style={{ lineHeight: 1.9 }}>
