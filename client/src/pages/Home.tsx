@@ -295,7 +295,7 @@ export default function Home() {
           </p>
 
           <p className="mb-5 leading-relaxed" style={{ lineHeight: 1.9 }}>
-            The map also achieves what Tufte calls <strong style={{ color: "oklch(0.85 0.06 75)" }}>integration of evidence</strong> — the seamless fusion of map, flow diagram, temperature chart, and text annotations into a single, self-contained artefact. This was a pioneering achievement in 1869, anticipating what we now call the infographic by over a century. Friendly (2002) <span className="ref-num">[2]</span> notes that Minard's broader body of work consistently pursued this integration, but the Napoleon map represents its apotheosis. The <strong style={{ color: "oklch(0.85 0.06 75)" }}>data-ink ratio</strong> is exceptionally high: virtually every mark on the page encodes meaningful information, with no decorative embellishment or chartjunk to distract the eye.
+            The map also achieves what Tufte calls <strong style={{ color: "oklch(0.85 0.06 75)" }}>integration of evidence</strong>, the seamless fusion of map, flow diagram, temperature chart, and text annotations into a single, self-contained artefact. This was a pioneering achievement in 1869, anticipating what many experts now call the infographic by over a century. Friendly (2002) <span className="ref-num">[2]</span> notes that Minard's broader body of work consistently pursued this integration, but the Napoleon map represents its pinnacle. The <strong style={{ color: "oklch(0.85 0.06 75)" }}>data to ink ratio</strong> is exceptionally high. Where virtually every mark on the page encodes meaningful information, with no decorative designs that serve no purpose or “chartjunk” to distract the eye.
           </p>
         </AnimatedSection>
 
