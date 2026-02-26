@@ -264,7 +264,9 @@ export default function Home() {
           </div>
 
           <p className="mb-5 leading-relaxed" style={{ lineHeight: 1.9 }}>
-            Jacques Bertin's foundational theory of visual variables <span className="ref-num">[3]</span> provides a precise vocabulary for understanding why the map works so well. The most powerful encoding is <span className="term-highlight">size</span>: the width of the flow band directly and proportionally represents the number of surviving soldiers. This exploits what Bertin identified as the most perceptually accurate quantitative variable, allowing the viewer to grasp the scale of attrition at a glance. The army departs from the Niemen River at 422,000 men; the band that returns is barely a sliver — approximately 10,000. No caption is needed to convey the horror.
+            Jacques Bertin's foundational theory regarding visual variables <span className="ref-num">[3]</span> provides a precise vocabulary to help with understanding the impact of this map to a large extent. The most powerful encoding is <span className="term-highlight">size</span>: the width of the flow band directly and proportionally represents the number of surviving soldiers.
+            This method exploits what Bertin identified as the most accurate quantitative variable perceptually, which allows for the viewer to grasp the scale of attrition at a glance.
+            The army departs from the Niemen River at 422,000 men while the band that returns is barely a sliver (approximately 10,000 men). No caption is needed to convey the scale of horror.
           </p>
         </AnimatedSection>
 
@@ -280,7 +282,7 @@ export default function Home() {
           </h2>
 
           <p className="mb-5 leading-relaxed" style={{ lineHeight: 1.9 }}>
-            The enduring power of Minard's map can be understood through Tufte's six principles of analytical design, articulated in <em>Beautiful Evidence</em> (2006) <span className="ref-num">[1]</span>. The graphic exemplifies each principle with remarkable fidelity.
+            We can understand the enduring impact of Minard's map through Tufte's six principles of analytical design, outlined in <em>Beautiful Evidence</em> (2006) <span className="ref-num">[1]</span>. The graphic exemplifies each principle with remarkable fidelity.
           </p>
 
           <div className="pull-quote">
@@ -289,7 +291,7 @@ export default function Home() {
           </div>
 
           <p className="mb-5 leading-relaxed" style={{ lineHeight: 1.9 }}>
-            The map <strong style={{ color: "oklch(0.85 0.06 75)" }}>forces visual comparisons</strong> through the contrasting tan and black bands: the broad, warm advance against the narrow, dark retreat. It <strong style={{ color: "oklch(0.85 0.06 75)" }}>shows causality</strong> through the temperature chart subscripted below the retreat path — a stroke of genius that links the plummeting thermometer readings directly to the army's accelerating collapse. As Cairo (2012) <span className="ref-num">[4]</span> argues, the best visualisations do not merely display data but construct an argument; Minard's map argues, compellingly and silently, against the folly of the campaign.
+            The map <strong style={{ color: "oklch(0.85 0.06 75)" }}>forces visual comparisons</strong> through the contrasting tan and black bands: the broad, warm advance against the narrow, dark retreat. It <strong style={{ color: "oklch(0.85 0.06 75)" }}>shows causality</strong> through the temperature chart subscripted below the retreat path, which is a very sharp way to highlight the thermometer readings that are in a plummeting decline directly with the army's quickly accelerating collapse. Cairo (2012) <span className="ref-num">[4]</span> argues the best visualisations construct arguments rather than just displaying data, just as Minard's map is able to compellingly argue, albeit silently, the imprudence of Napoleon's campaign.
           </p>
 
           <p className="mb-5 leading-relaxed" style={{ lineHeight: 1.9 }}>

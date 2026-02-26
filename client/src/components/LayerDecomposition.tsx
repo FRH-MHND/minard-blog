@@ -165,7 +165,7 @@ export default function LayerDecomposition() {
           fontFamily: "'Lora', serif",
         }}
       >
-        Minard's map is the product of several distinct data layers, each encoding a separate variable. Isolating these layers reveals how each contributes to the whole — and how their combination produces an argument no single chart could make alone.
+        Minard's map is the product of several distinct data layers, each encoding a separate variable. Isolating these layers reveals how each contributes to the whole and how their combination produces an argument no single chart could make alone.
       </p>
 
       {/* Tabs */}
